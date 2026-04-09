@@ -34,7 +34,7 @@ repositories {
 ```kotlin
 protobuf.plugins {
     id("grpc") { artifact = "io.grpc:protoc-gen-grpc-java:4.34.1" }
-    id("dto") { artifact = "io.github.no1evil:protoc-gen-dto:1.0.0" }
+    id("dto") { artifact = "io.github.no1evil:protoc-gen-dto:1.0" }
 }
 
 protobuf.generateProtoTasks {
