@@ -53,6 +53,9 @@ java {
 }
 
 graalvmNative {
+    metadataRepository {
+        enabled.set(false)
+    }
 
     binaries {
         named("main") {
