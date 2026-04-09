@@ -8,8 +8,10 @@ plugins {
     `kotlin-dsl`
 }
 
+val projectVersion: String by project
+
 group = "io.github.no1evil"
-version = "1.0-SNAPSHOT"
+version = projectVersion
 
 repositories {
     mavenCentral()
