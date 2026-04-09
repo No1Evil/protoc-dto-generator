@@ -25,6 +25,13 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.44")
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+        vendor.set(JvmVendorSpec.GRAAL_VM)
+    }
+}
+
 tasks.jar {
     enabled = false
     dependsOn(tasks.shadowJar)
