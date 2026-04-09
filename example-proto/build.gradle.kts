@@ -68,6 +68,9 @@ protobuf {
                 id("mappers"){
                     option("target=mapper")
                 }
+                id("service"){
+                    option("target=service")
+                }
             }
         }
     }
