@@ -6,6 +6,20 @@ and service interfaces for protobuf classes,
 supporting auto-generated mappers without using any
 other library *(such as MapStruct)*.
 
+**Compiled into a native library for fast execution**
+
+## Tech used
+<details>
+
+* GraalVM
+* Protobuf java, java util
+* Slf4j
+* Lombok
+* JavaParser
+* GradleShadow
+
+</details>
+
 ## Example of generated classes and .proto files
 
 [Examples](docs/EXAMPLE.md)

@@ -18,13 +18,9 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-
-            // Имя артефакта, под которым он будет лежать в io.github.no1evil
             artifactId = "proto-core-lib"
         }
     }
-    // Блок repositories здесь не обязателен для mavenLocal,
-    // так как задача publishToMavenLocal встроена по умолчанию
 }
 
 java {
