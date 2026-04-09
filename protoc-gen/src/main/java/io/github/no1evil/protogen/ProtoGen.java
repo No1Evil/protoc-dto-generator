@@ -12,7 +12,7 @@ public class ProtoGen {
         .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_21);
   }
 
-  static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException {
     new GeneratorEngine().execute();
   }
 }
