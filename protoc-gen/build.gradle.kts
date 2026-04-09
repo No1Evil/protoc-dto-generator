@@ -5,7 +5,7 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "9.4.1"
     id("org.graalvm.buildtools.native") version "1.0.0"
-    `kotlin-dsl`
+    `maven-publish`
 }
 
 val projectVersion: String by project
@@ -68,8 +68,35 @@ graalvmNative {
             verbose.set(true)
             buildArgs.add("--no-fallback")
             buildArgs.add("-H:+ReportExceptionStackTraces")
-            buildArgs.add("--initialize-at-build-time=com.google.protobuf")
-            buildArgs.add("--initialize-at-run-time=com.github.javaparser")
+            buildArgs.add("--initialize-at-build-time=com.google.protobuf,com.github.javaparser")
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("native") {
+            groupId = "io.github.no1evil"
+            artifactId = "protoc-gen-dto"
+            version = projectVersion
+
+            val exeFile = file("build/native/nativeCompile/protoc-gen.exe")
+
+            artifact(exeFile) {
+                classifier = "windows-x86_64"
+                extension = "exe"
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/no1evil/protoc-dto-generator")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
