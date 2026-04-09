@@ -22,6 +22,8 @@ dependencies {
 
     implementation("io.grpc:grpc-stub:1.66.0")
     implementation("io.grpc:grpc-protobuf:1.66.0")
+
+    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 }
 
 tasks.test {
