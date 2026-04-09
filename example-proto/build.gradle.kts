@@ -37,9 +37,10 @@ protobuf {
         id("grpc") {
             artifact = "io.grpc:protoc-gen-grpc-java:1.66.0"
         }
-        id("all"){
-            path = project.file("script/proto-gen.bat").absolutePath
-        }
+        // If you want to generate everything in one sourceSet
+//        id("all"){
+//            path = project.file("script/proto-gen.bat").absolutePath
+//        }
         id("dto") {
             path = project.file("script/proto-gen.bat").absolutePath
         }
@@ -58,7 +59,7 @@ protobuf {
                 id("grpc")
 
                 // If you want to generate everything in one sourceSet
-                id("all")
+                // id("all")
 
                 // If you want to separate the sourceSet
                 id("dto"){
