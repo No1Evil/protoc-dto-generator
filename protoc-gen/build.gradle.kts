@@ -59,6 +59,10 @@ graalvmNative {
 
     binaries {
         named("main") {
+            javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+            mainClass.set("io.github.no1evil.protogen.ProtoGen")
+            sharedLibrary.set(false)
+
             verbose.set(true)
             buildArgs.add("--no-fallback")
             buildArgs.add("-H:+ReportExceptionStackTraces")
