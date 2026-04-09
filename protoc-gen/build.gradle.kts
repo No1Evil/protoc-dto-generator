@@ -19,8 +19,8 @@ repositories {
 
 dependencies {
     implementation("com.github.javaparser:javaparser-symbol-solver-core:3.28.0")
-    implementation("com.google.protobuf:protobuf-java:4.34.1")
-    implementation("com.google.protobuf:protobuf-java-util:4.34.1")
+    implementation("com.google.protobuf:protobuf-java:4.28.2")
+    implementation("com.google.protobuf:protobuf-java-util:4.28.2")
     implementation("org.slf4j:slf4j-simple:2.0.9")
 
     compileOnly("org.projectlombok:lombok:1.18.44")

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package io.github.no1evil.proto.v1.example;
+
+option java_multiple_files = true;
+option java_package = "io.github.no1evil.api.v1.example";
+option java_outer_classname = "ExampleServiceProto";
+
+import "google/protobuf/empty.proto";
+import "example_request.proto";
+import "example_response.proto";
+
+service ExampleService {
+  rpc GetHello(HelloRequest) returns (HelloResponse);
+
+  rpc GetWuh(WuhRequest) returns (WuhResponse);
+
+  rpc GetAdditional(google.protobuf.Empty) returns (HelloResponse);
+
+  rpc GetEmpty(HelloResponse) returns (google.protobuf.Empty);
+
+  rpc SubDouble(stream WuhRequest) returns (WuhResponse);
+}
