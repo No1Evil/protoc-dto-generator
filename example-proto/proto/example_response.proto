@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package io.github.no1evil.proto.v1.example;
+
+option java_multiple_files = true;
+option java_package = "io.github.no1evil.api.v1.example";
+option java_outer_classname = "ExampleResponsesProto";
+
+import "example_model.proto";
+
+message HelloResponse {
+  bool ok = 1;
+}
+
+message WuhResponse {
+  double smth = 1;
+  string eyo = 2;
+  optional uint32 another = 3;
+  optional MyExtensiveModel my_extensive_model = 4;
+}
