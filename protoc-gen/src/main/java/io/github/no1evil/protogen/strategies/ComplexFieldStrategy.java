@@ -5,6 +5,7 @@ import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.NodeList;
 import io.github.no1evil.protogen.model.FieldModel;
+import io.github.no1evil.protogen.parser.FastParser;
 import io.github.no1evil.protogen.util.GeneratorUtil;
 
 public class ComplexFieldStrategy implements FieldGenerationStrategy {
@@ -44,7 +45,7 @@ public class ComplexFieldStrategy implements FieldGenerationStrategy {
       // guard against null pointer exceptions
       // when executing Builder.setField(...) on null sub-messages
       IfStmt ifStmt = new IfStmt();
-      ifStmt.setCondition(StaticJavaParser.parseExpression("domain." + field.name() + "() != null"));
+      ifStmt.setCondition(FastParser.parseExpression("domain." + field.name() + "() != null"));
       ifStmt.setThenStmt(new ExpressionStmt(new MethodCallExpr(new NameExpr(builderVar), setter, new NodeList<>(mapperCall))));
       body.addStatement(ifStmt);
     }

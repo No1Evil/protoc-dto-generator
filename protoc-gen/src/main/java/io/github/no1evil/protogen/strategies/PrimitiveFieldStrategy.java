@@ -1,10 +1,10 @@
 package io.github.no1evil.protogen.strategies;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.NodeList;
 import io.github.no1evil.protogen.model.FieldModel;
+import io.github.no1evil.protogen.parser.FastParser;
 import io.github.no1evil.protogen.util.GeneratorUtil;
 
 public class PrimitiveFieldStrategy implements FieldGenerationStrategy {
@@ -31,7 +31,7 @@ public class PrimitiveFieldStrategy implements FieldGenerationStrategy {
 
     if (field.javaType().equals("String") || field.isOptional() || field.hasOneOf()) {
       IfStmt ifStmt = new IfStmt();
-      ifStmt.setCondition(StaticJavaParser.parseExpression("domain." + field.name() + "() != null"));
+      ifStmt.setCondition(FastParser.parseExpression("domain." + field.name() + "() != null"));
       ifStmt.setThenStmt(new ExpressionStmt(new MethodCallExpr(new NameExpr(builderVar), setter, new NodeList<>(getter))));
       body.addStatement(ifStmt);
     } else {

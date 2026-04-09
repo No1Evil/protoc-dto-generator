@@ -2,7 +2,7 @@ package io.github.no1evil.protogen.util;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.StaticJavaParser;
+import io.github.no1evil.protogen.parser.FastParser;
 
 public final class GeneratorUtil {
   private GeneratorUtil() {}
@@ -56,7 +56,7 @@ public final class GeneratorUtil {
   }
 
   public static MethodCallExpr createMapperCall(String mapperFqn, String methodName, Expression argument) {
-    FieldAccessExpr instance = new FieldAccessExpr(StaticJavaParser.parseExpression(mapperFqn), "INSTANCE");
+    FieldAccessExpr instance = new FieldAccessExpr(FastParser.parseExpression(mapperFqn), "INSTANCE");
     return new MethodCallExpr(instance, methodName, new NodeList<>(argument));
   }
 
@@ -64,7 +64,7 @@ public final class GeneratorUtil {
     Expression getter = createGetter(scope, getterName, isDomain, isRepeated);
     MethodCallExpr stream = new MethodCallExpr(getter, "stream");
     MethodReferenceExpr methodRef = new MethodReferenceExpr(
-        new FieldAccessExpr(StaticJavaParser.parseExpression(mapperFqn), "INSTANCE"),
+        new FieldAccessExpr(FastParser.parseExpression(mapperFqn), "INSTANCE"),
         new NodeList<>(),
         methodName
     );

@@ -1,10 +1,10 @@
 package io.github.no1evil.protogen.strategies;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.NodeList;
 import io.github.no1evil.protogen.model.FieldModel;
+import io.github.no1evil.protogen.parser.FastParser;
 import io.github.no1evil.protogen.util.GeneratorUtil;
 
 public class MapFieldStrategy implements FieldGenerationStrategy {
@@ -24,7 +24,7 @@ public class MapFieldStrategy implements FieldGenerationStrategy {
         "java.util.Map.Entry::getKey, " +
         "e -> " + field.mapValueMapperFqn() + ".INSTANCE.toDomain(e.getValue())))";
 
-    return StaticJavaParser.parseExpression(mapExpr);
+    return FastParser.parseExpression(mapExpr);
   }
 
   @Override
@@ -39,11 +39,11 @@ public class MapFieldStrategy implements FieldGenerationStrategy {
           "java.util.stream.Collectors.toMap(" +
           "java.util.Map.Entry::getKey, " +
           "e -> " + field.mapValueMapperFqn() + ".INSTANCE.toProto(e.getValue())))";
-      valueToPut = StaticJavaParser.parseExpression(mapExpr);
+      valueToPut = FastParser.parseExpression(mapExpr);
     }
 
     IfStmt ifStmt = new IfStmt();
-    ifStmt.setCondition(StaticJavaParser.parseExpression("domain." + field.name() + "() != null"));
+    ifStmt.setCondition(FastParser.parseExpression("domain." + field.name() + "() != null"));
     ifStmt.setThenStmt(new ExpressionStmt(new MethodCallExpr(new NameExpr(builderVar), setter, new NodeList<>(valueToPut))));
     body.addStatement(ifStmt);
   }

@@ -1,6 +1,5 @@
 package io.github.no1evil.protogen.generators;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -19,6 +18,7 @@ import io.github.no1evil.protogen.model.FieldModel;
 import io.github.no1evil.protogen.model.MessageModel;
 import io.github.no1evil.protogen.model.OneOfModel;
 import io.github.no1evil.protogen.model.ProtoFileModel;
+import io.github.no1evil.protogen.parser.FastParser;
 import io.github.no1evil.protogen.strategies.StrategyProvider;
 import io.github.no1evil.protogen.util.GeneratorUtil;
 
@@ -39,17 +39,17 @@ public class MapperGenerator extends AbstractJavaGenerator implements CodeGenera
         .setName(className).setPublic(true).setFinal(true);
 
     mapperClass.addFieldWithInitializer(className, "INSTANCE",
-        StaticJavaParser.parseExpression("new " + className + "()"),
+        FastParser.parseExpression("new " + className + "()"),
         Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
     mapperClass.addConstructor(Modifier.Keyword.PRIVATE);
 
     MethodDeclaration toDomain = mapperClass.addMethod("toDomain", Modifier.Keyword.PUBLIC);
-    toDomain.addParameter(StaticJavaParser.parseType(protoFqn), "proto");
+    toDomain.addParameter(FastParser.parseType(protoFqn), "proto");
     toDomain.setType(domainFqn);
     toDomain.setBody(buildToDomain(model, domainFqn));
 
     MethodDeclaration toProto = mapperClass.addMethod("toProto", Modifier.Keyword.PUBLIC);
-    toProto.addParameter(StaticJavaParser.parseType(domainFqn), "domain");
+    toProto.addParameter(FastParser.parseType(domainFqn), "domain");
     toProto.setType(protoFqn);
     toProto.setBody(buildToProto(model, protoFqn));
 
@@ -62,7 +62,7 @@ public class MapperGenerator extends AbstractJavaGenerator implements CodeGenera
 
     for (FieldModel field : model.standardFields()) {
       Expression mappedExpr = strategies.get(field).generateToDomain(field, "proto", field.mapperFqn());
-      VariableDeclarator vd = new VariableDeclarator(StaticJavaParser.parseType("var"), field.name(), mappedExpr);
+      VariableDeclarator vd = new VariableDeclarator(FastParser.parseType("var"), field.name(), mappedExpr);
       body.addStatement(new VariableDeclarationExpr(vd));
       args.add(new NameExpr(field.name()));
     }
@@ -83,18 +83,18 @@ public class MapperGenerator extends AbstractJavaGenerator implements CodeGenera
       sw.append("  default ->\n    null;\n");
       sw.append("}");
 
-      VariableDeclarator vd = new VariableDeclarator(StaticJavaParser.parseType("var"), oneOf.camelCaseName(), StaticJavaParser.parseExpression(sw.toString()));
+      VariableDeclarator vd = new VariableDeclarator(FastParser.parseType("var"), oneOf.camelCaseName(), FastParser.parseExpression(sw.toString()));
       body.addStatement(new VariableDeclarationExpr(vd));
       args.add(new NameExpr(oneOf.camelCaseName()));
     }
 
-    body.addStatement(new ReturnStmt(new ObjectCreationExpr(null, StaticJavaParser.parseClassOrInterfaceType(domainFqn), args)));
+    body.addStatement(new ReturnStmt(new ObjectCreationExpr(null, FastParser.parseClassOrInterfaceType(domainFqn), args)));
     return body;
   }
 
   private BlockStmt buildToProto(MessageModel model, String protoFqn) {
     BlockStmt body = new BlockStmt();
-    body.addStatement(StaticJavaParser.parseStatement("var builder = " + protoFqn + ".newBuilder();"));
+    body.addStatement(FastParser.parseStatement("var builder = " + protoFqn + ".newBuilder();"));
 
     for (FieldModel field : model.standardFields()) {
       strategies.get(field).generateToProto(field, "builder", "domain", body);
@@ -102,7 +102,7 @@ public class MapperGenerator extends AbstractJavaGenerator implements CodeGenera
 
     for (OneOfModel oneOf : model.oneOfs()) {
       IfStmt ifStmt = new IfStmt();
-      ifStmt.setCondition(StaticJavaParser.parseExpression("domain." + oneOf.camelCaseName() + "() != null"));
+      ifStmt.setCondition(FastParser.parseExpression("domain." + oneOf.camelCaseName() + "() != null"));
 
       StringBuilder sw = new StringBuilder();
       sw.append("switch (domain.").append(oneOf.camelCaseName()).append("()) {\n");
@@ -120,7 +120,7 @@ public class MapperGenerator extends AbstractJavaGenerator implements CodeGenera
       sw.append("}");
 
       BlockStmt thenBlock = new BlockStmt();
-      thenBlock.addStatement(StaticJavaParser.parseStatement(sw.toString()));
+      thenBlock.addStatement(FastParser.parseStatement(sw.toString()));
       ifStmt.setThenStmt(thenBlock);
 
       body.addStatement(ifStmt);
