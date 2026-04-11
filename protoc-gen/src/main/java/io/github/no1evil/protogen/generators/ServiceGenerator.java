@@ -22,9 +22,7 @@ public class ServiceGenerator extends AbstractJavaGenerator implements CodeGener
 
     Set<String> imports = new HashSet<>();
 
-    boolean usesFuture = false;
-    boolean usesConsumer = false;
-    boolean usesStreamSession = false;
+    boolean usesStream = false;
 
     for (MethodModel method : model.methods()) {
       String camelCaseName = GeneratorUtil.pascalToCamelCase(method.name());
@@ -39,37 +37,30 @@ public class ServiceGenerator extends AbstractJavaGenerator implements CodeGener
 
       if (!method.clientStreaming() && !method.serverStreaming()) {
         // Type 1: Unary
-        md.setType("CompletableFuture<" + outSimple + ">");
+        md.setType(outSimple);
         md.addParameter(inSimple, "request");
-        usesFuture = true;
       }
       else if (!method.clientStreaming() && method.serverStreaming()) {
         // Type 2: Server Streaming
-        md.setType("CompletableFuture<Void>");
+        md.setType("Stream<" + outSimple + ">");
         md.addParameter(inSimple, "request");
-        md.addParameter("Consumer<" + outSimple + ">", "responseObserver");
-        usesFuture = true;
-        usesConsumer = true;
+        usesStream = true;
       }
       else if (method.clientStreaming() && !method.serverStreaming()) {
         // Type 3: Client Streaming
-        md.setType("StreamSession<" + inSimple + ">");
-        md.addParameter("CompletableFuture<" + outSimple + ">", "responseFuture");
-        usesStreamSession = true;
-        usesFuture = true;
+        md.setType(outSimple);
+        md.addParameter("Stream<" + inSimple + ">", "requestStream");
+        usesStream = true;
       }
       else {
         // Type 4: Bidirectional Streaming
-        md.setType("StreamSession<" + inSimple + ">");
-        md.addParameter("Consumer<" + outSimple + ">", "responseObserver");
-        usesStreamSession = true;
-        usesConsumer = true;
+        md.setType("Stream<" + outSimple + ">");
+        md.addParameter("Stream<" + inSimple + ">", "requestStream");
+        usesStream = true;
       }
     }
 
-    if (usesFuture) imports.add("java.util.concurrent.CompletableFuture");
-    if (usesConsumer) imports.add("java.util.function.Consumer");
-    if (usesStreamSession) imports.add("io.github.no1evil.protogen.base.service.StreamSession");
+    if (usesStream) imports.add("java.util.stream.Stream");
 
     return assemble(file.javaPackage() + "." + getSubPackage(), serviceIfc, imports);
   }
